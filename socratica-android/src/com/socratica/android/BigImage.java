@@ -32,7 +32,12 @@ import android.view.View.OnTouchListener;
  */
 public class BigImage extends View implements OnGestureListener, OnTouchListener  {
 
+	/**
+	 * Simplest cache to remove bitmap loading overhead. Uses weak references to prevent OutOfMemory errors. 
+	 */
 	private static final Map<String, WeakReference<Bitmap>> bitmapsCache = new HashMap<String, WeakReference<Bitmap>>();
+	
+	
 	/**
 	 * TODO
 	 */
