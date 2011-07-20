@@ -141,6 +141,12 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 		this.bitmapResource = 0;
 		initBounds();
 	}
+	
+	public void setImageResource(int drawable){
+      this.file = null;
+      this.bitmapResource = drawable;
+      initBounds();
+  }
 
 	private BitmapFactory.Options loadBitmapOpts() {
 		BitmapFactory.Options opts = new BitmapFactory.Options();
