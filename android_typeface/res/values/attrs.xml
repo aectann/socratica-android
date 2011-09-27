@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <declare-styleable name="TypeFaceView">
+	     <attr name="customTypeface" format="string" />
+    </declare-styleable>
+    <attr name="typefaceViewStyle" format="reference"/>
+</resources>
