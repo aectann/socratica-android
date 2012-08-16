@@ -16,6 +16,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -168,6 +169,9 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 			}
 		}
 		bitmap = BitmapFactory.decodeStream(stream ,null, opts);
+		if (bitmap == null) {
+			Log.e("big_image", "null bitmap received out of decode stream. Resource: " + bitmapResource + ", file: " + file + ".");
+		}
 		return bitmap;
 	}
 
