@@ -4,8 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.socratica.mobile.TypefaceView.TypefaceInitializer;
-
 /**
  * Regular {@link TextView} that just allows usage of 'customTypeface' attribute to specify
  * font for text rendering. See {@link TypefaceInitializer} for details.
@@ -18,5 +16,9 @@ public class TypefaceTextView extends TextView implements TypefaceView {
     super(context, attrs);
     TypefaceInitializer.init(this, context, attrs);
   }
-
+  
+  @Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+  }
 }
