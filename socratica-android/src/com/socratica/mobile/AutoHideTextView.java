@@ -1,8 +1,6 @@
 package com.socratica.mobile;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -14,17 +12,24 @@ import android.widget.TextView;
  */
 public class AutoHideTextView extends TextView {
 
-  Rect bounds = new Rect();
-
   public AutoHideTextView(Context context, AttributeSet attrs) {
     super(context, attrs);
   }
-
+  
   @Override
-  protected void onDraw(Canvas canvas) {
-    int height = getHeight();
-    if (getLineCount() * getLineHeight() <= height) {
-      super.onDraw(canvas);      
+  public boolean onPreDraw() {
+    int visibility = getVisibility();
+    if (getLineCount() * getLineHeight() <= getHeight()) {
+      if (GONE != visibility) {
+        setVisibility(GONE);
+        requestLayout();
+      }
+    } else {
+      if (VISIBLE != visibility) {
+        setVisibility(VISIBLE);
+        requestLayout();
+      }
     }
+    return super.onPreDraw();
   }
 }
