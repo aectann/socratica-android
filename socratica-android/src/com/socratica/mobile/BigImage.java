@@ -43,7 +43,6 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 	 * TODO
 	 */
 	protected static final String ATTR_BOUND_PAD = "boundPad";
-	protected static final double DEFAULT_SCALE_FACTOR = 2.56;
 	protected static final String ATTR_MAP = "map";
 	protected static final String ATTR_SRC = "src";
 	protected float scale;
@@ -60,6 +59,7 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 	protected boolean boundsInitialized;
 	protected Handler guiHander;
 	protected int bitmapResource;
+	private double scaleFactor;
 	private String file;
 	private Paint paint;
 
@@ -128,6 +128,7 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 				dy = 0;
 				matrix = new Matrix();
 				scale = initScale;
+				scaleFactor = 1/initScale;
 				this.boundsInitialized = true;
 				notify();
 			} else {
@@ -224,7 +225,7 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 	 * view.
 	 */
 	public void scaleOut() {
-		scale(1 / DEFAULT_SCALE_FACTOR);
+		scale(1 / scaleFactor);
 	}
 
 	/**
@@ -232,7 +233,7 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 	 * view.
 	 */
 	public void scaleIn() {
-		scale(DEFAULT_SCALE_FACTOR);
+		scale(scaleFactor);
 	}
 
 	protected void scale(double scaleFactor) {
@@ -280,7 +281,8 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 
 	@Override
 	public boolean onSingleTapUp(MotionEvent e) {
-		if(scale <= initScale * DEFAULT_SCALE_FACTOR){
+	  
+		if(scale < 0.7){
 			dx += viewWidth/2 - e.getX();
 			dy += viewHeight/2 - e.getY();
 			scaleIn();
