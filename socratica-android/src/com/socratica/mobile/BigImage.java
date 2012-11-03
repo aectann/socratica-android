@@ -5,15 +5,18 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Context;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -56,7 +59,7 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 	private double scaleFactor;
 	private String file;
   private int[] coords;
-	private static Map<String, WeakReference<Drawable>> drawableCache = new HashMap<String, WeakReference<Drawable>>();
+	private static Map<String, SoftReference<Drawable>> drawableCache = new HashMap<String, SoftReference<Drawable>>();
 	
 	public BigImage(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -106,14 +109,19 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
       } else{
         try {
           InputStream stream = new BufferedInputStream(new FileInputStream(file), 4096);
-          result = Drawable.createFromStream(stream, "map");
+          Options options = new Options();
+          options.inInputShareable = true;
+          options.inPurgeable = true;
+          options.inPreferredConfig = Config.ARGB_8888;
+          options.inDither = true;
+          result = new BitmapDrawable(getResources(), BitmapFactory.decodeStream(stream, null, options));
           stream.close();
         } catch (IOException e) {
           throw new IllegalStateException(e);
         }
       }
   	  result.setBounds(0, 0, imageWidth, imageHeight);
-  	  drawableCache.put(drawableKey, new WeakReference<Drawable>(result));
+  	  drawableCache.put(drawableKey, new SoftReference<Drawable>(result));
 	  } 
     return result;
 	}
@@ -152,7 +160,7 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
     this.file = file;
     this.bitmapResource = 0;
     if (drawable != null) {
-      drawableCache.put(getDrawableKey(), new WeakReference<Drawable>(drawable));
+      drawableCache.put(getDrawableKey(), new SoftReference<Drawable>(drawable));
     }
     initBounds();
   }
