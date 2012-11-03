@@ -1,26 +1,26 @@
 package com.socratica.mobile;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.View.OnTouchListener;
 
 /**
@@ -33,12 +33,6 @@ import android.view.View.OnTouchListener;
  */
 public class BigImage extends View implements OnGestureListener, OnTouchListener  {
 
-	/**
-	 * Simplest cache to remove bitmap loading overhead. Uses weak references to prevent OutOfMemory errors. 
-	 */
-	private static final Map<String, WeakReference<Bitmap>> bitmapsCache = new HashMap<String, WeakReference<Bitmap>>();
-	
-	
 	/**
 	 * TODO
 	 */
@@ -61,8 +55,9 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 	protected int bitmapResource;
 	private double scaleFactor;
 	private String file;
-	private Paint paint;
-
+  private int[] coords;
+	private static Map<String, WeakReference<Drawable>> drawableCache = new HashMap<String, WeakReference<Drawable>>();
+	
 	public BigImage(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		guiHander = new Handler();
@@ -71,18 +66,21 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 		setFocusableInTouchMode(true);
 		gestureDetector = new GestureDetector(context, this);
 		this.setOnTouchListener(this);
-		paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
 		if (matrix != null) {
+		  int[] coords = getCoords();
 			matrix.reset();
 			ajustDeltas();
 			matrix.postScale(scale, scale);
-			matrix.postTranslate(dx, dy);
-			canvas.drawBitmap(getImage(), matrix, paint);
-			canvas.save(Canvas.CLIP_TO_LAYER_SAVE_FLAG);
+			matrix.postTranslate(dx + coords[0], dy + coords[1]);
+			canvas.save();
+			canvas.setMatrix(matrix);
+			Drawable image = getImage();
+			image.draw(canvas);
+			canvas.restore();
 		} else {
 			super.onDraw(canvas);
 		}
@@ -91,35 +89,44 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 		}
 	}
 
-	private Bitmap getImage() {
-		Bitmap bitmap = null;
-		String bitmapKey = null;
-		
-		if(bitmapResource > 0){
-			bitmapKey = String.valueOf(bitmapResource);
-		} else{
-			bitmapKey = this.file;
-		}
-		
-		if(bitmapsCache.containsKey(bitmapKey)){
-			WeakReference<Bitmap> weakReference = bitmapsCache.get(bitmapKey);
-			bitmap = weakReference.get();
-		}
-		
-		if(bitmap == null){
-			BitmapFactory.Options opts = new BitmapFactory.Options();
-			opts.inPurgeable = true;
-			opts.inInputShareable = true;
-			bitmap = decodeBitmap(opts);
-			bitmapsCache.put(bitmapKey, new WeakReference<Bitmap>(bitmap));
-		}
-		return bitmap;
+  private int[] getCoords() {
+    if (coords == null) {
+      coords = new int[2];
+      getLocationOnScreen(coords);
+    }
+    return coords;
+  }
+
+	private Drawable getImage() {
+	  String drawableKey = getDrawableKey();
+    Drawable result = drawableCache.containsKey(drawableKey) ? drawableCache.get(drawableKey).get() : null;
+    if (result == null) {
+  		InputStream stream;
+      if (bitmapResource > 0) {
+        result = getResources().getDrawable(bitmapResource);
+      } else{
+        try {
+          stream = new BufferedInputStream(new FileInputStream(file));
+          result = Drawable.createFromStream(stream, "map");
+          stream.close();
+        } catch (IOException e) {
+          throw new IllegalStateException(e);
+        }
+      }
+  	  result.setBounds(0, 0, imageWidth, imageHeight);
+  	  drawableCache.put(drawableKey, new WeakReference<Drawable>(result));
+	  } 
+    return result;
 	}
 
-	protected synchronized void initBounds() {
+	private String getDrawableKey() {
+    return file == null ? String.valueOf(bitmapResource) : file;
+  }
+
+  protected synchronized void initBounds() {
 			viewWidth = getMeasuredWidth();
 			viewHeight = getMeasuredHeight();
-			if(viewWidth > 0 && viewHeight > 0){
+			if (viewWidth > 0 && viewHeight > 0) {
 				BitmapFactory.Options opt = loadBitmapOpts();
 				imageWidth = opt.outWidth;
 				imageHeight = opt.outHeight;
@@ -128,7 +135,7 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 				dy = 0;
 				matrix = new Matrix();
 				scale = initScale;
-				scaleFactor = 1/initScale;
+				scaleFactor = 1 / initScale;
 				this.boundsInitialized = true;
 				notify();
 			} else {
@@ -153,27 +160,18 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 	private BitmapFactory.Options loadBitmapOpts() {
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inJustDecodeBounds = true;
-		decodeBitmap(opts);
+    InputStream stream;
+    if(bitmapResource > 0){
+    	stream = getResources().openRawResource(bitmapResource);
+    } else{
+    	try {
+    		stream = new BufferedInputStream(new FileInputStream(file));
+    	} catch (FileNotFoundException e) {
+    		throw new IllegalStateException(e);
+    	}
+    }
+    BitmapFactory.decodeStream(stream ,null, opts);
 		return opts;
-	}
-
-	protected Bitmap decodeBitmap(BitmapFactory.Options opts) {
-		Bitmap bitmap;
-		InputStream stream;
-		if(bitmapResource > 0){
-			stream = getResources().openRawResource(bitmapResource);
-		} else{
-			try {
-				stream = new FileInputStream(file);
-			} catch (FileNotFoundException e) {
-				throw new IllegalStateException(e);
-			}
-		}
-		bitmap = BitmapFactory.decodeStream(stream ,null, opts);
-		if (bitmap == null) {
-			Log.e("big_image", "null bitmap received out of decode stream. Resource: " + bitmapResource + ", file: " + file + ".");
-		}
-		return bitmap;
 	}
 
 	private void ajustDeltas() {
