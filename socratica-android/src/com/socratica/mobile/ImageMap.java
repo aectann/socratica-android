@@ -116,6 +116,9 @@ public class ImageMap extends BigImage {
 				for (int areaIndex : areasToDraw) {
 					path.reset();
 					path.addPath(areaPaths[areaIndex]);
+					matrix.reset();
+					matrix.postScale(scale, scale);
+					matrix.postTranslate(dx, dy);
 					path.transform(matrix);
 					if (colorsToDraw != null && colorsToDraw.length > i) {
 						PaintType paintType = colorsToDraw[i];
