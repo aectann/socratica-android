@@ -101,12 +101,11 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 	  String drawableKey = getDrawableKey();
     Drawable result = drawableCache.containsKey(drawableKey) ? drawableCache.get(drawableKey).get() : null;
     if (result == null) {
-  		InputStream stream;
       if (bitmapResource > 0) {
         result = getResources().getDrawable(bitmapResource);
       } else{
         try {
-          stream = new BufferedInputStream(new FileInputStream(file));
+          InputStream stream = new BufferedInputStream(new FileInputStream(file), 4096);
           result = Drawable.createFromStream(stream, "map");
           stream.close();
         } catch (IOException e) {
@@ -126,7 +125,7 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
   protected synchronized void initBounds() {
 			viewWidth = getMeasuredWidth();
 			viewHeight = getMeasuredHeight();
-			if (viewWidth > 0 && viewHeight > 0) {
+			if (viewWidth > 0 && viewHeight > 0 && (bitmapResource > 0 || file != null)) {
 				BitmapFactory.Options opt = loadBitmapOpts();
 				imageWidth = opt.outWidth;
 				imageHeight = opt.outHeight;
@@ -146,10 +145,17 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 		}
 	
 	public void setImageFile(String file){
-		this.file = file;
-		this.bitmapResource = 0;
-		initBounds();
+		setImageFile(file, null);
 	}
+	
+	public void setImageFile(String file, Drawable drawable){
+    this.file = file;
+    this.bitmapResource = 0;
+    if (drawable != null) {
+      drawableCache.put(getDrawableKey(), new WeakReference<Drawable>(drawable));
+    }
+    initBounds();
+  }
 	
 	public void setImageResource(int drawable){
       this.file = null;
