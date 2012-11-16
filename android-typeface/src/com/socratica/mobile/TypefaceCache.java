@@ -4,7 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.socratica.mobile.R;
+import com.socratica.mobile.typeface.R;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;

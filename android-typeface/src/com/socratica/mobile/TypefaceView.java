@@ -1,5 +1,7 @@
 package com.socratica.mobile;
 
+import com.socratica.mobile.typeface.R;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
