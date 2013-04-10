@@ -1,14 +1,12 @@
 package com.socratica.mobile;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Path;
 
 import com.socratica.mobile.MapParser.Area;
@@ -21,13 +19,11 @@ import com.socratica.mobile.MapParser.Area;
  */
 public class SimpleResourceCache implements ImageMapResourcesCache {
 
-	HashMap<Integer, WeakReference<Bitmap>> bitmaps;
 	private HashMap<Integer, Object> dataIds;
 	private HashMap<Integer, Object> paths;
 	private MapParser mapParser;
 	private HashMap<Integer, HashMap<Integer, ArrayList<Integer>>> areaGroups;
 	public SimpleResourceCache(MapParser mapParser) {
-		bitmaps = new HashMap<Integer, WeakReference<Bitmap>>();
 		dataIds = new HashMap<Integer, Object>();
 		paths = new HashMap<Integer, Object>();
 		areaGroups = new HashMap<Integer, HashMap<Integer, ArrayList<Integer>>>();
