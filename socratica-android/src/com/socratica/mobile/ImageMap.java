@@ -52,18 +52,19 @@ public class ImageMap extends BigImage {
 	public static final int RED_OVERLAY_COLOR = 0xffff0000;
 	public static final PaintType PAINT_TYPE_DEFAULT_RED = new PaintType(Style.FILL, RED_OVERLAY_COLOR);
 
-	Path[] areaPaths;
-	Path path;
-	Region region;
-	ImageMapListener imageMapListener;
-	int[] areasToDraw;
-	Paint paint;
-	PaintType[] colorsToDraw;
-	protected boolean pathsInitialized;
-	int[] taskAreasIds;
+	private Path[] areaPaths;
+	private Path path;
+	private Region region;
+	private ImageMapListener imageMapListener;
+	private int[] areasToDraw;
+	private Paint paint;
+	private PaintType[] colorsToDraw;
+	private  boolean pathsInitialized;
+	private int[] taskAreasIds;
 	private int mapResource;
 	private WindowManager manager;
-	protected int boundPad;
+	private  int boundPad;
+  private SimpleResourceCache simpleResourceCache;
 	
 	public ImageMap(final Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -241,7 +242,15 @@ public class ImageMap extends BigImage {
 	}
 
 	private ImageMapResourcesCache getCache() {
-		return (ImageMapResourcesCache) getContext().getApplicationContext();
+		Context applicationContext = getContext().getApplicationContext();
+		if (applicationContext instanceof ImageMapResourcesCache) {
+		  return (ImageMapResourcesCache) applicationContext;
+		} else {
+		  if (simpleResourceCache == null) {
+		    simpleResourceCache = new SimpleResourceCache(new XmlMapParser());
+		  }
+      return simpleResourceCache;
+		}
 	}
 
 	@Override
