@@ -31,17 +31,17 @@ public class SimpleResourceCache implements ImageMapResourcesCache {
 	}
 
 	@Override
-	public synchronized Path[] getAreaPaths(Context context, Integer xmlResourceId) {
-		if (dataIds.containsKey(xmlResourceId)) {
-			return (Path[]) paths.get(xmlResourceId);
+	public synchronized Path[] getAreaPaths(Context context, Integer mapResourceId) {
+		if (dataIds.containsKey(mapResourceId)) {
+			return (Path[]) paths.get(mapResourceId);
 		}
 		try {
-			init(context, xmlResourceId);
+			init(context, mapResourceId);
 		} catch (Exception e) {
 			throw new IllegalStateException("Failed to init image map areas", e);
 		}
 		notify();
-		return (Path[]) paths.get(xmlResourceId);
+		return (Path[]) paths.get(mapResourceId);
 	}
 
 	public synchronized void init(Context context, int mapResource)
