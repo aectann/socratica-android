@@ -23,6 +23,7 @@ public class SimpleResourceCache implements ImageMapResourcesCache {
 	private HashMap<Integer, Object> paths;
 	private MapParser mapParser;
 	private HashMap<Integer, HashMap<Integer, ArrayList<Integer>>> areaGroups;
+	
 	public SimpleResourceCache(MapParser mapParser) {
 		dataIds = new HashMap<Integer, Object>();
 		paths = new HashMap<Integer, Object>();
@@ -46,25 +47,27 @@ public class SimpleResourceCache implements ImageMapResourcesCache {
 
 	public synchronized void init(Context context, int mapResource)
 			throws XmlPullParserException, IOException {
-		ArrayList<Area> areas = mapParser.parseAreas(context, mapResource);
-		int size = areas.size();
-		int[][] areaIds = new int[size][2];
-		Path[] areaPaths = new Path[size];
-		HashMap<Integer, ArrayList<Integer>> groupsByData = new HashMap<Integer, ArrayList<Integer>>();
-		int i = 0;
-		for (Area a : areas) {
-			areaIds[i][0] = a.id;
-			areaIds[i][1] = a.target;
-			areaPaths[i] = a.path;
-			if(!groupsByData.containsKey(a.id)){
-				groupsByData.put(a.id, new ArrayList<Integer>());
-			}
-			groupsByData.get(a.id).add(a.target);
-			i++;
-		}
-		dataIds.put(mapResource, areaIds);
-		paths.put(mapResource, areaPaths);
-		areaGroups.put(mapResource, groupsByData);
+	  if (!dataIds.containsKey(mapResource)) {
+  		ArrayList<Area> areas = mapParser.parseAreas(context, mapResource);
+  		int size = areas.size();
+  		int[][] areaIds = new int[size][2];
+  		Path[] areaPaths = new Path[size];
+  		HashMap<Integer, ArrayList<Integer>> groupsByData = new HashMap<Integer, ArrayList<Integer>>();
+  		int i = 0;
+  		for (Area a : areas) {
+  			areaIds[i][0] = a.id;
+  			areaIds[i][1] = a.target;
+  			areaPaths[i] = a.path;
+  			if(!groupsByData.containsKey(a.id)){
+  				groupsByData.put(a.id, new ArrayList<Integer>());
+  			}
+  			groupsByData.get(a.id).add(a.target);
+  			i++;
+  		}
+  		dataIds.put(mapResource, areaIds);
+  		paths.put(mapResource, areaPaths);
+  		areaGroups.put(mapResource, groupsByData);
+	  }
 	}
 
 	@Override
