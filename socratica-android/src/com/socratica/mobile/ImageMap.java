@@ -59,11 +59,11 @@ public class ImageMap extends BigImage {
 	private int[] areasToDraw;
 	private Paint paint;
 	private PaintType[] colorsToDraw;
-	private  boolean pathsInitialized;
+	private boolean pathsInitialized;
 	private int[] taskAreasIds;
 	private int mapResource;
 	private WindowManager manager;
-	private  int boundPad;
+	private int boundPad;
   private SimpleResourceCache simpleResourceCache;
 	
 	public ImageMap(final Context context, AttributeSet attrs) {
