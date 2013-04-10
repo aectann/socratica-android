@@ -2,12 +2,12 @@ package com.socratica.mobile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
 import android.graphics.Path;
+import android.util.SparseArray;
 
 import com.socratica.mobile.MapParser.Area;
 
@@ -19,21 +19,21 @@ import com.socratica.mobile.MapParser.Area;
  */
 public class SimpleResourceCache implements ImageMapResourcesCache {
 
-	private HashMap<Integer, Object> dataIds;
-	private HashMap<Integer, Object> paths;
+	private SparseArray<Object> dataIds;
+	private SparseArray<Object> paths;
 	private MapParser mapParser;
-	private HashMap<Integer, HashMap<Integer, ArrayList<Integer>>> areaGroups;
+	private SparseArray<SparseArray<ArrayList<Integer>>> areaGroups;
 	
 	public SimpleResourceCache(MapParser mapParser) {
-		dataIds = new HashMap<Integer, Object>();
-		paths = new HashMap<Integer, Object>();
-		areaGroups = new HashMap<Integer, HashMap<Integer, ArrayList<Integer>>>();
+		dataIds = new SparseArray<Object>();
+		paths = new SparseArray<Object>();
+		areaGroups = new SparseArray<SparseArray<ArrayList<Integer>>>();
 		this.mapParser = mapParser;
 	}
 
 	@Override
 	public synchronized Path[] getAreaPaths(Context context, Integer mapResourceId) {
-		if (dataIds.containsKey(mapResourceId)) {
+		if (dataIds.indexOfKey(mapResourceId) > -1) {
 			return (Path[]) paths.get(mapResourceId);
 		}
 		try {
@@ -47,18 +47,18 @@ public class SimpleResourceCache implements ImageMapResourcesCache {
 
 	public synchronized void init(Context context, int mapResource)
 			throws XmlPullParserException, IOException {
-	  if (!dataIds.containsKey(mapResource)) {
+	  if (dataIds.indexOfKey(mapResource) < 0) {
   		ArrayList<Area> areas = mapParser.parseAreas(context, mapResource);
   		int size = areas.size();
   		int[][] areaIds = new int[size][2];
   		Path[] areaPaths = new Path[size];
-  		HashMap<Integer, ArrayList<Integer>> groupsByData = new HashMap<Integer, ArrayList<Integer>>();
+  		SparseArray<ArrayList<Integer>> groupsByData = new SparseArray<ArrayList<Integer>>();
   		int i = 0;
   		for (Area a : areas) {
   			areaIds[i][0] = a.id;
   			areaIds[i][1] = a.target;
   			areaPaths[i] = a.path;
-  			if(!groupsByData.containsKey(a.id)){
+  			if(groupsByData.indexOfKey(a.id) < 0){
   				groupsByData.put(a.id, new ArrayList<Integer>());
   			}
   			groupsByData.get(a.id).add(a.target);
@@ -72,7 +72,7 @@ public class SimpleResourceCache implements ImageMapResourcesCache {
 
 	@Override
 	public int getDataId(Context context, Integer xmlResourceId, Integer pathIndex) {
-		if(!dataIds.containsKey(xmlResourceId)){
+		if(dataIds.indexOfKey(xmlResourceId) < 0){
 			try {
 				init(context, xmlResourceId);
 			} catch (XmlPullParserException e) {
@@ -86,7 +86,7 @@ public class SimpleResourceCache implements ImageMapResourcesCache {
 
 	@Override
 	public int getAreaId(Context context, Integer xmlResourceId, Integer dataId, Integer target) {
-		if(!dataIds.containsKey(xmlResourceId)){
+    if(dataIds.indexOfKey(xmlResourceId) < 0){
 			try {
 				init(context, xmlResourceId);
 			} catch (XmlPullParserException e) {
@@ -112,7 +112,7 @@ public class SimpleResourceCache implements ImageMapResourcesCache {
 	@Override
 	public ArrayList<Integer> getAreaGroups(Context context,
 			Integer xmlResourceId, Integer dataId) {
-		if(!areaGroups.containsKey(xmlResourceId)){
+		if(areaGroups.indexOfKey(xmlResourceId) < 0){
 			try {
 				init(context, xmlResourceId);
 			} catch (XmlPullParserException e) {
