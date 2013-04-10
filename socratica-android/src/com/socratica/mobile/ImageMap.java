@@ -11,6 +11,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.Paint.Style;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -65,13 +66,22 @@ public class ImageMap extends BigImage {
 	private WindowManager manager;
 	private int boundPad;
   private SimpleResourceCache simpleResourceCache;
+  protected RectF bounds;
+  protected Handler guiHander;
+
+  protected static final String ATTR_MAP = "map";
+  /**
+   * TODO
+   */
+  protected static final String ATTR_BOUND_PAD = "boundPad";
 	
 	public ImageMap(final Context context, AttributeSet attrs) {
 		super(context, attrs);
 		manager = (WindowManager) context.getSystemService(WINDOW_SERVICE);
-		mapResource = attrs.getAttributeResourceValue(null, ATTR_MAP, 0);
-		boundPad = attrs.getAttributeIntValue(null, ATTR_BOUND_PAD, 50);
-
+		mapResource = attrs.getAttributeResourceValue(null, ImageMap.ATTR_MAP, 0);
+		boundPad = attrs.getAttributeIntValue(null, ImageMap.ATTR_BOUND_PAD, 50);
+		guiHander = new Handler();
+		
 		if (mapResource == 0) {
 			throw new IllegalStateException("map attribute must be specified");
 		}

@@ -15,7 +15,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -36,34 +35,28 @@ import android.view.View.OnTouchListener;
  */
 public class BigImage extends View implements OnGestureListener, OnTouchListener  {
 
-	/**
-	 * TODO
-	 */
-	protected static final String ATTR_BOUND_PAD = "boundPad";
-	protected static final String ATTR_MAP = "map";
-	protected static final String ATTR_SRC = "src";
+	private static final String ATTR_SRC = "src";
+	private static final Map<String, SoftReference<Drawable>> DRAWABLE_CACHE = new HashMap<String, SoftReference<Drawable>>();
+
 	protected float scale;
 	protected float viewWidth;
 	protected float viewHeight;
-	protected GestureDetector gestureDetector;
 	protected float dx;
 	protected float dy;
 	protected Matrix matrix;
-	protected RectF bounds;
-	protected float initScale;
+	protected boolean boundsInitialized;
+
+	private GestureDetector gestureDetector;
+	private float initScale;
 	private int imageWidth;
 	private int imageHeight;
-	protected boolean boundsInitialized;
-	protected Handler guiHander;
-	protected int bitmapResource;
+	private int bitmapResource;
 	private double scaleFactor;
 	private String file;
   private int[] coords;
-	private static Map<String, SoftReference<Drawable>> drawableCache = new HashMap<String, SoftReference<Drawable>>();
 	
 	public BigImage(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		guiHander = new Handler();
 		bitmapResource = attrs.getAttributeResourceValue(null, ATTR_SRC, 0);
 		setFocusable(true);
 		setFocusableInTouchMode(true);
@@ -102,7 +95,7 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 
 	private Drawable getImage() {
 	  String drawableKey = getDrawableKey();
-    Drawable result = drawableCache.containsKey(drawableKey) ? drawableCache.get(drawableKey).get() : null;
+    Drawable result = DRAWABLE_CACHE.containsKey(drawableKey) ? DRAWABLE_CACHE.get(drawableKey).get() : null;
     if (result == null) {
       if (bitmapResource > 0) {
         result = getResources().getDrawable(bitmapResource);
@@ -121,7 +114,7 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
         }
       }
   	  result.setBounds(0, 0, imageWidth, imageHeight);
-  	  drawableCache.put(drawableKey, new SoftReference<Drawable>(result));
+  	  DRAWABLE_CACHE.put(drawableKey, new SoftReference<Drawable>(result));
 	  } 
     return result;
 	}
@@ -160,7 +153,7 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
     this.file = file;
     this.bitmapResource = 0;
     if (drawable != null) {
-      drawableCache.put(getDrawableKey(), new SoftReference<Drawable>(drawable));
+      DRAWABLE_CACHE.put(getDrawableKey(), new SoftReference<Drawable>(drawable));
     }
     initBounds();
   }
