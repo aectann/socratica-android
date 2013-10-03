@@ -9,6 +9,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
 import android.content.res.XmlResourceParser;
+import android.graphics.Matrix;
 import android.graphics.Path;
 
 /**
@@ -22,9 +23,20 @@ public class XmlMapParser implements MapParser {
 	private static final String RECT = "rect";
 	private static final String POLY = "poly";
 	private static final String SHAPE = "shape";
+	
+	private double scale;
+	private boolean scalePoints;
+	
+	public XmlMapParser() {
+	}
 
+	public XmlMapParser(double scale) {
+		this.scale = scale;
+		scalePoints = scale != 1.0;
+	}
+	
 	public ArrayList<Area> parseAreas(Context context, int mapResource) throws XmlPullParserException, IOException {
-	  ArrayList<Area> areas = new ArrayList<Area>();
+		ArrayList<Area> areas = new ArrayList<Area>();
 		int id = Integer.MIN_VALUE;
 		int target = Integer.MIN_VALUE;
 		Area area = null;
@@ -52,6 +64,13 @@ public class XmlMapParser implements MapParser {
 				}
 			}
 			next = parser.next();
+		}
+		if (scalePoints) {
+			Matrix m = new Matrix();
+			m.preScale((float)scale, (float)scale);
+			for (Area a : areas) {
+				a.path.transform(m);
+			}
 		}
 		Collections.sort(areas, new Comparator<Area>() {
 			public int compare(Area a1, Area a2) {
