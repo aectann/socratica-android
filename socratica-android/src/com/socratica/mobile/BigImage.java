@@ -94,28 +94,28 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 
 	private Drawable getImage() {
 	  String drawableKey = getDrawableKey();
-    Drawable result = DRAWABLE_CACHE.containsKey(drawableKey) ? DRAWABLE_CACHE.get(drawableKey).get() : null;
-    if (result == null) {
-      if (bitmapResource > 0) {
-        result = getResources().getDrawable(bitmapResource);
-      } else{
-        try {
-          InputStream stream = new BufferedInputStream(new FileInputStream(file), 4096);
-          Options options = new Options();
-          options.inInputShareable = true;
-          options.inPurgeable = true;
-          options.inPreferredConfig = Config.RGB_565;
-          options.inDither = true;
-          result = new BitmapDrawable(getResources(), BitmapFactory.decodeStream(stream, null, options));
-          stream.close();
-        } catch (IOException e) {
-          throw new IllegalStateException(e);
+      Drawable result = DRAWABLE_CACHE.containsKey(drawableKey) ? DRAWABLE_CACHE.get(drawableKey).get() : null;
+      if (result == null) {
+        if (bitmapResource > 0) {
+          result = getResources().getDrawable(bitmapResource);
+        } else{
+          try {
+            InputStream stream = new BufferedInputStream(new FileInputStream(file), 4096);
+            Options options = new Options();
+            options.inInputShareable = true;
+            options.inPurgeable = true;
+            options.inPreferredConfig = Config.RGB_565;
+            options.inDither = true;
+            result = new BitmapDrawable(getResources(), BitmapFactory.decodeStream(stream, null, options));
+            stream.close();
+          } catch (IOException e) {
+            throw new IllegalStateException(e);
+          }
         }
-      }
-  	  result.setBounds(0, 0, imageWidth, imageHeight);
-  	  DRAWABLE_CACHE.put(drawableKey, new SoftReference<Drawable>(result));
-	  } 
-    return result;
+    	  result.setBounds(0, 0, imageWidth, imageHeight);
+    	  DRAWABLE_CACHE.put(drawableKey, new SoftReference<Drawable>(result));
+  	  } 
+      return result;
 	}
 
 	private String getDrawableKey() {
@@ -166,17 +166,17 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
 	private BitmapFactory.Options loadBitmapOpts() {
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inJustDecodeBounds = true;
-    InputStream stream;
-    if(bitmapResource > 0){
-    	stream = getResources().openRawResource(bitmapResource);
-    } else{
-    	try {
-    		stream = new BufferedInputStream(new FileInputStream(file));
-    	} catch (FileNotFoundException e) {
-    		throw new IllegalStateException(e);
-    	}
-    }
-    BitmapFactory.decodeStream(stream ,null, opts);
+        InputStream stream;
+        if(bitmapResource > 0){
+        	stream = getResources().openRawResource(bitmapResource);
+        } else{
+        	try {
+        		stream = new BufferedInputStream(new FileInputStream(file));
+        	} catch (FileNotFoundException e) {
+        		throw new IllegalStateException(e);
+        	}
+        }
+        BitmapFactory.decodeStream(stream ,null, opts);
 		return opts;
 	}
 
