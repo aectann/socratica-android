@@ -145,6 +145,12 @@ public class BigImage extends View implements OnGestureListener,
     }
     invalidate();
   }
+  
+  @Override
+  protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    super.onLayout(changed, left, top, right, bottom);
+    initBounds();
+  }
 
   public void setImageFile(String file) {
     setImageFile(file, null);
