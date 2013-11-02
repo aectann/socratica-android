@@ -104,7 +104,7 @@ public class BigImage extends View implements OnGestureListener, OnTouchListener
           Options options = new Options();
           options.inInputShareable = true;
           options.inPurgeable = true;
-          options.inPreferredConfig = Config.ARGB_8888;
+          options.inPreferredConfig = Config.RGB_565;
           options.inDither = true;
           result = new BitmapDrawable(getResources(), BitmapFactory.decodeStream(stream, null, options));
           stream.close();
