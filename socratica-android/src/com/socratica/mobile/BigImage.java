@@ -185,6 +185,37 @@ public class BigImage extends ImageView implements OnGestureListener,
     return opts;
   }
 
+  private void ajustDeltas() {
+    if (dx > 0) {
+      dx = 0;
+    }
+    if (dy > 0) {
+      dy = 0;
+    }
+    float minDx = 0;
+    if (imageWidth * scale < viewWidth) {
+      minDx = (viewWidth - imageWidth * scale) / 2;
+    } else {
+      minDx = -imageWidth * scale + viewWidth;
+    }
+    if (scale == initScale && viewWidth > viewHeight) {
+      dx = (viewWidth - imageWidth * scale) / 2;
+    } else if (dx < minDx) {
+      dx = minDx;
+    }
+    float minDy = 0;
+    if (imageHeight * scale < viewHeight) {
+      minDy = (viewHeight - imageHeight * scale) / 2;
+    } else {
+      minDy = -imageHeight * scale + viewHeight;
+    }
+    if (scale == initScale && viewHeight > viewWidth) {
+      dy = (viewHeight - imageHeight * scale) / 2;
+    } else if (dy < minDy) {
+      dy = minDy;
+    }
+  }
+
   /**
    * Restores the map state to the initial.
    */
@@ -301,6 +332,7 @@ public class BigImage extends ImageView implements OnGestureListener,
         prevDelta = currentDelta;
       }
     }
+    ajustDeltas();
     updateMatrix();
     return true;
   }
