@@ -13,7 +13,6 @@ import android.content.Context;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -23,6 +22,7 @@ import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.ImageView;
 
 /**
  * Just like image view, but with scrolling and scale abilities.
@@ -32,7 +32,7 @@ import android.view.View.OnTouchListener;
  * @author Konstantin Burov (aectann@gmail.com)
  * 
  */
-public class BigImage extends View implements OnGestureListener,
+public class BigImage extends ImageView implements OnGestureListener,
     OnTouchListener {
 
   private static final String ATTR_SRC = "src";
@@ -43,7 +43,6 @@ public class BigImage extends View implements OnGestureListener,
   protected float viewHeight;
   protected float dx;
   protected float dy;
-  protected Matrix matrix;
   protected boolean boundsInitialized;
 
   private GestureDetector gestureDetector;
@@ -53,7 +52,6 @@ public class BigImage extends View implements OnGestureListener,
   private int bitmapResource;
   private double scaleFactor;
   private String file;
-  private int[] coords;
 
   public BigImage(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -62,52 +60,32 @@ public class BigImage extends View implements OnGestureListener,
     setFocusableInTouchMode(true);
     gestureDetector = new GestureDetector(context, this);
     this.setOnTouchListener(this);
-  }
-
-  @Override
-  protected void onDraw(Canvas canvas) {
-    if (matrix != null) {
-      int[] coords = getCoords();
-      matrix.reset();
-      ajustDeltas();
-      matrix.postScale(scale, scale);
-      matrix.postTranslate(dx + coords[0], dy + coords[1]);
-      canvas.save();
-      canvas.setMatrix(matrix);
-      Drawable image = getImage();
-      image.draw(canvas);
-      canvas.restore();
-    } else {
-      super.onDraw(canvas);
-    }
-    if (!boundsInitialized) {
-      initBounds();
+    if (file != null || bitmapResource > 0) {
+      setImageDrawable(getImage());
     }
   }
 
-  private int[] getCoords() {
-    if (coords == null) {
-      coords = new int[2];
-      getLocationOnScreen(coords);
-    }
-    return coords;
+  private void updateMatrix() {
+    Matrix m = getImageMatrix();
+    m.reset();
+    m.postScale(scale, scale);
+    m.postTranslate(dx, dy);
   }
 
-  private Drawable getImage() {
+  public Drawable getImage() {
     String drawableKey = getDrawableKey();
     Drawable result = DRAWABLE_CACHE.containsKey(drawableKey) ? DRAWABLE_CACHE.get(drawableKey).get() : null;
     if (result == null) {
+      Options options = new Options();
+      options.inInputShareable = true;
+      options.inPurgeable = true;
+      options.inPreferredConfig = Config.RGB_565;
+      options.inDither = true;
       if (bitmapResource > 0) {
-        result = getResources().getDrawable(bitmapResource);
+        result = new BitmapDrawable(getResources(), BitmapFactory.decodeStream(getResources().openRawResource(bitmapResource), null, options));
       } else {
         try {
-          InputStream stream = new BufferedInputStream(
-              new FileInputStream(file), 4096);
-          Options options = new Options();
-          options.inInputShareable = true;
-          options.inPurgeable = true;
-          options.inPreferredConfig = Config.RGB_565;
-          options.inDither = true;
+          InputStream stream = new BufferedInputStream(new FileInputStream(file), 4096);
           result = new BitmapDrawable(getResources(), BitmapFactory.decodeStream(stream, null, options));
           stream.close();
         } catch (IOException e) {
@@ -125,30 +103,48 @@ public class BigImage extends View implements OnGestureListener,
   }
 
   protected synchronized void initBounds() {
-    viewWidth = getMeasuredWidth();
-    viewHeight = getMeasuredHeight();
     if (viewWidth > 0 && viewHeight > 0 && (bitmapResource > 0 || file != null)) {
       BitmapFactory.Options opt = loadBitmapOpts();
       imageWidth = opt.outWidth;
       imageHeight = opt.outHeight;
-      initScale = Math.min(viewWidth / imageWidth, viewHeight / imageHeight);
+      float[] f = new float[9];
+      getImageMatrix().getValues(f);
+      initScale = f[0];
       dx = 0;
       dy = 0;
-      matrix = new Matrix();
       scale = initScale;
       scaleFactor = 1 / initScale;
       this.boundsInitialized = true;
       notify();
     } else {
-      matrix = null;
       this.boundsInitialized = false;
     }
-    invalidate();
+    if (!isLayoutRequested()) {
+      invalidate();
+    }
   }
   
   @Override
   protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
     super.onLayout(changed, left, top, right, bottom);
+    initBounds();
+  }
+  
+  @Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    int measuredWidth = getMeasuredWidth();
+    int measuredHeight = getMeasuredHeight();
+    if (measuredHeight != viewHeight || measuredWidth != viewWidth) {
+      viewWidth = measuredWidth;
+      viewHeight = measuredHeight;
+      initBounds();
+    }
+  }
+  
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
     initBounds();
   }
 
@@ -163,13 +159,13 @@ public class BigImage extends View implements OnGestureListener,
       DRAWABLE_CACHE.put(getDrawableKey(),
           new SoftReference<Drawable>(drawable));
     }
-    initBounds();
+    setImageDrawable(getImage());
   }
 
   public void setImageResource(int drawable) {
     this.file = null;
     this.bitmapResource = drawable;
-    initBounds();
+    setImageDrawable(getImage());
   }
 
   private BitmapFactory.Options loadBitmapOpts() {
@@ -187,37 +183,6 @@ public class BigImage extends View implements OnGestureListener,
     }
     BitmapFactory.decodeStream(stream, null, opts);
     return opts;
-  }
-
-  private void ajustDeltas() {
-    if (dx > 0) {
-      dx = 0;
-    }
-    if (dy > 0) {
-      dy = 0;
-    }
-    float minDx = 0;
-    if (imageWidth * scale < viewWidth) {
-      minDx = (viewWidth - imageWidth * scale) / 2;
-    } else {
-      minDx = -imageWidth * scale + viewWidth;
-    }
-    if (scale == initScale && viewWidth > viewHeight) {
-      dx = (viewWidth - imageWidth * scale) / 2;
-    } else if (dx < minDx) {
-      dx = minDx;
-    }
-    float minDy = 0;
-    if (imageHeight * scale < viewHeight) {
-      minDy = (viewHeight - imageHeight * scale) / 2;
-    } else {
-      minDy = -imageHeight * scale + viewHeight;
-    }
-    if (scale == initScale && viewHeight > viewWidth) {
-      dy = (viewHeight - imageHeight * scale) / 2;
-    } else if (dy < minDy) {
-      dy = minDy;
-    }
   }
 
   /**
@@ -254,13 +219,10 @@ public class BigImage extends View implements OnGestureListener,
     prevDx *= scaleFactor;
     float prevDy = dy + (imageHeight * scale - viewHeight) / 2;
     prevDy *= scaleFactor;
-
     scale *= scaleFactor;
-
     if (scale < initScale) {
       scale = initScale;
     }
-
     dx = prevDx - (imageWidth * scale - viewWidth) / 2;
     dy = prevDy - (imageHeight * scale - viewHeight) / 2;
     invalidate();
@@ -338,8 +300,8 @@ public class BigImage extends View implements OnGestureListener,
         }
         prevDelta = currentDelta;
       }
-      invalidate();
     }
+    updateMatrix();
     return true;
   }
 
