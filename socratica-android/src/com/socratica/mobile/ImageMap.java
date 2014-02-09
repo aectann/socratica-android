@@ -235,11 +235,7 @@ public class ImageMap extends BigImage {
     scale = Math.min(viewWidth / w, viewHeight / h);
     dx = (-bounds.left - bounds.width() / 2) * scale + viewWidth / 2;
     dy = (-bounds.top - bounds.height() / 2) * scale + viewHeight / 2;
-    guiHander.post(new Runnable() {
-      public void run() {
-        invalidate();
-      }
-    });
+    updateMatrix();
   }
 
   public int getDataId(int areaId) {
