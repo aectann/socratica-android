@@ -65,7 +65,7 @@ public class BigImage extends ImageView implements OnGestureListener,
     }
   }
 
-  private void updateMatrix() {
+  protected void updateMatrix() {
     Matrix m = getImageMatrix();
     m.reset();
     m.postScale(scale, scale);
