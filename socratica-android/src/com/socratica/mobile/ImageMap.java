@@ -69,8 +69,6 @@ public class ImageMap extends BigImage {
   private int boundPad;
   private SimpleResourceCache simpleResourceCache;
   protected RectF bounds;
-  protected Handler guiHander;
-
   protected static final String ATTR_MAP = "map";
   /**
    * TODO
@@ -82,7 +80,6 @@ public class ImageMap extends BigImage {
     manager = (WindowManager) context.getSystemService(WINDOW_SERVICE);
     mapResource = attrs.getAttributeResourceValue(null, ImageMap.ATTR_MAP, 0);
     boundPad = attrs.getAttributeIntValue(null, ImageMap.ATTR_BOUND_PAD, 50);
-    guiHander = new Handler();
 
     if (mapResource == 0) {
       throw new IllegalStateException("map attribute must be specified");
