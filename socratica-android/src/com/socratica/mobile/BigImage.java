@@ -266,7 +266,7 @@ public class BigImage extends ImageView implements OnGestureListener,
     }
     dx = prevDx - (imageWidth * scale - viewWidth) / 2;
     dy = prevDy - (imageHeight * scale - viewHeight) / 2;
-    invalidate();
+    updateMatrix();
   }
 
   @Override
@@ -289,7 +289,6 @@ public class BigImage extends ImageView implements OnGestureListener,
       float distanceY) {
     dx -= distanceX;
     dy -= distanceY;
-    invalidate();
     return true;
   }
 
