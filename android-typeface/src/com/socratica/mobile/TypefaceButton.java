@@ -14,9 +14,21 @@ import com.socratica.mobile.TypefaceView.TypefaceInitializer;
  */
 public class TypefaceButton extends Button implements TypefaceView {
 
+  public TypefaceButton(Context context) {
+    super(context);
+    TypefaceInitializer.init(this, context, null);
+  }
+  
   public TypefaceButton(Context context, AttributeSet attrs) {
     super(context, attrs);
     TypefaceInitializer.init(this, context, attrs);
   }
+  
+  public TypefaceButton(Context context, AttributeSet attrs, int defStyle) {
+    super(context, attrs, defStyle);
+    TypefaceInitializer.init(this, context, attrs);
+  }
+  
+  
 
 }
