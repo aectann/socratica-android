@@ -205,11 +205,11 @@ public class ImageMap extends BigImage {
       colorsToDraw = colors;
       return;
     }
-    new Thread(new Runnable() {
+    postDelayed(new Runnable() {
       public void run() {
         showAreasSync(showAreaIds, colors);
       }
-    }).start();
+    }, 0);
   }
 
   void showAreasSync(final int[] showAreaIds, final PaintType[] colors) {
@@ -260,23 +260,26 @@ public class ImageMap extends BigImage {
     if (!superCallResult) {
       int x = (int) ((e.getX() - dx) / scale);
       int y = (int) ((e.getY() - dy) / scale);
-      int length = areaPaths.length;
-      Region region = this.region;
-      RectF bounds = this.bounds;
-      Path[] areaPaths = this.areaPaths;
-
-      for (int i = 0; i < length; i++) {
-        Path areaPath = areaPaths[i];
-        areaPath.computeBounds(bounds, false);
-        region.set((int) bounds.left, (int) bounds.top, (int) bounds.right,
-            (int) bounds.bottom);
-        if (region.contains(x, y)) {
-          region.setPath(areaPath, region);
+      float targetScale = initScale * 3;
+      if (scale < targetScale) {
+        scaleTo(x, y, targetScale);
+      } else {
+        int length = areaPaths.length;
+        Region region = this.region;
+        RectF bounds = this.bounds;
+        Path[] areaPaths = this.areaPaths;
+        for (int i = 0; i < length; i++) {
+          Path areaPath = areaPaths[i];
+          areaPath.computeBounds(bounds, false);
+          region.set((int) bounds.left, (int) bounds.top, (int) bounds.right, (int) bounds.bottom);
           if (region.contains(x, y)) {
-            if (imageMapListener != null) {
-              imageMapListener.onAreaClicked(i);
+            region.setPath(areaPath, region);
+            if (region.contains(x, y)) {
+              if (imageMapListener != null) {
+                imageMapListener.onAreaClicked(i);
+              }
+              return true;
             }
-            return true;
           }
         }
       }
