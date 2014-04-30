@@ -1,9 +1,9 @@
-package com.socratica.mobile;
-
-import java.util.ArrayList;
+package com.socratica.mobile.imagemap;
 
 import android.content.Context;
 import android.graphics.Path;
+
+import java.util.ArrayList;
 
 /**
  * TODO

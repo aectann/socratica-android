@@ -1,4 +1,4 @@
-package com.socratica.mobile;
+package com.socratica.mobile.imagemap;
 
 import android.graphics.Paint.Style;
 

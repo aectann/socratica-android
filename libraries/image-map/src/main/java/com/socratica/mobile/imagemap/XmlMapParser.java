@@ -1,16 +1,16 @@
-package com.socratica.mobile;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
-import org.xmlpull.v1.XmlPullParserException;
+package com.socratica.mobile.imagemap;
 
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.graphics.Matrix;
 import android.graphics.Path;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * TODO
