@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.socratica.mobile.misc">
+
+    <application
+        android:label="misc"
+        >
+
+    </application>
+
+</manifest>

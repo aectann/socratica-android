@@ -1,4 +1,4 @@
-package com.socratica.mobile;
+package com.socratica.mobile.imagemap;
 
 /**
  * @author aectann@gmail.com (Konstantin Burov)

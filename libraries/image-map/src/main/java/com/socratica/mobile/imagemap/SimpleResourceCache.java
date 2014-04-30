@@ -1,15 +1,15 @@
-package com.socratica.mobile;
-
-import java.io.IOException;
-import java.util.ArrayList;
-
-import org.xmlpull.v1.XmlPullParserException;
+package com.socratica.mobile.imagemap;
 
 import android.content.Context;
 import android.graphics.Path;
 import android.util.SparseArray;
 
-import com.socratica.mobile.MapParser.Area;
+import com.socratica.mobile.imagemap.MapParser.Area;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * TODO

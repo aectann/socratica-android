@@ -1,20 +1,24 @@
 package com.socratica.mobile;
 
-import static android.content.Context.WINDOW_SERVICE;
-
-import com.socratica.mobile.BigImage;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Region;
-import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.WindowManager;
+
+import com.socratica.mobile.imagemap.ImageMapListener;
+import com.socratica.mobile.imagemap.ImageMapResourcesCache;
+import com.socratica.mobile.imagemap.PaintType;
+import com.socratica.mobile.imagemap.SimpleResourceCache;
+import com.socratica.mobile.imagemap.XmlMapParser;
+
+import static android.content.Context.WINDOW_SERVICE;
 
 /**
  * Image map implementation for Android platform. Allows you show an image with
@@ -28,7 +32,7 @@ import android.view.WindowManager;
  * coords="176,95,248,107,241,161,183,153,162,148,168,120"/> </map>
  * 
  * The "href" attribute must be an integer number, this identifier is passed to
- * the {@link ImageMapListener#onAreaClicked(int)} when someone clicks the area.
+ * the {@link com.socratica.mobile.imagemap.ImageMapListener#onAreaClicked(int)} when someone clicks the area.
  * 
  * 
  * To use the ImageMap in your app you should define it within your layout. See
@@ -38,7 +42,7 @@ import android.view.WindowManager;
  * 
  * Usage example:
  * 
- * <com.socratica.mobile.ImageMap android:src="@drawable/map50"
+ * <com.socratica.ImageMap android:src="@drawable/map50"
  * map="@xml/usa_map" android:layout_width="fill_parent"
  * android:layout_height="fill_parent" />
  * 
