@@ -1,6 +1,7 @@
 package com.socratica.mobile;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
@@ -15,6 +16,7 @@ import android.view.WindowManager;
 import com.socratica.mobile.imagemap.ImageMapListener;
 import com.socratica.mobile.imagemap.ImageMapResourcesCache;
 import com.socratica.mobile.imagemap.PaintType;
+import com.socratica.mobile.imagemap.R;
 import com.socratica.mobile.imagemap.SimpleResourceCache;
 import com.socratica.mobile.imagemap.XmlMapParser;
 
@@ -71,19 +73,14 @@ public class ImageMap extends BigImage {
   private WindowManager manager;
   private int boundPad;
   private SimpleResourceCache simpleResourceCache;
-  protected RectF bounds;
-  protected static final String ATTR_MAP = "map";
-  /**
-   * TODO
-   */
-  protected static final String ATTR_BOUND_PAD = "boundPad";
+  private RectF bounds;
 
   public ImageMap(final Context context, AttributeSet attrs) {
     super(context, attrs);
     manager = (WindowManager) context.getSystemService(WINDOW_SERVICE);
-    mapResource = attrs.getAttributeResourceValue(null, ImageMap.ATTR_MAP, 0);
-    boundPad = attrs.getAttributeIntValue(null, ImageMap.ATTR_BOUND_PAD, 50);
-
+    TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.ImageMap);
+    mapResource = attributes.getResourceId(R.styleable.ImageMap_map, 0);
+    boundPad = attributes.getDimensionPixelSize(R.styleable.ImageMap_selectionPadding, 50);
     if (mapResource == 0) {
       throw new IllegalStateException("map attribute must be specified");
     }
@@ -230,8 +227,8 @@ public class ImageMap extends BigImage {
     DisplayMetrics outMetrics = new DisplayMetrics();
     manager.getDefaultDisplay().getMetrics(outMetrics);
 
-    float w = bounds.width() + boundPad * outMetrics.density;
-    float h = bounds.height() + boundPad * outMetrics.density;
+    float w = bounds.width() + boundPad;
+    float h = bounds.height() + boundPad;
     scale = Math.min(viewWidth / w, viewHeight / h);
     dx = (-bounds.left - bounds.width() / 2) * scale + viewWidth / 2;
     dy = (-bounds.top - bounds.height() / 2) * scale + viewHeight / 2;
