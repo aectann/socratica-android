@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <declare-styleable name="ImageMap">
+	     <attr name="map" format="reference" />
+         <attr name="selectionPadding" format="dimension" />
+    </declare-styleable>
+</resources>
