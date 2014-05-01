@@ -1,1 +1,1 @@
-include ':libraries:typeface', ':libraries:big-image', ':libraries:image-map', ':libraries:misc'
+include ':libraries:typeface', ':libraries:big-image', ':libraries:image-map', ':libraries:misc', ':example'
