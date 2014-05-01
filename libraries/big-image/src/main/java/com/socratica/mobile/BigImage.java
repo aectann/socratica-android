@@ -16,7 +16,6 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -36,7 +35,6 @@ import android.widget.ImageView;
 public class BigImage extends ImageView implements OnGestureListener,
     OnTouchListener {
 
-  private static final String ATTR_SRC = "src";
   private static final Map<String, SoftReference<Drawable>> DRAWABLE_CACHE = new HashMap<String, SoftReference<Drawable>>();
 
   protected float scale;
@@ -53,17 +51,15 @@ public class BigImage extends ImageView implements OnGestureListener,
   private int bitmapResource;
   private double scaleFactor;
   private String file;
-  protected Handler guiHander;
 
   public BigImage(Context context, AttributeSet attrs) {
     super(context, attrs);
-    bitmapResource = attrs.getAttributeResourceValue(null, ATTR_SRC, 0);
+    bitmapResource = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res/android", "src", 0);
     setFocusable(true);
     setFocusableInTouchMode(true);
     gestureDetector = new GestureDetector(context, this);
-    guiHander = new Handler();
     this.setOnTouchListener(this);
-    if (file != null || bitmapResource > 0) {
+    if (bitmapResource != 0) {
       setImageDrawable(getImage());
     }
   }
@@ -74,8 +70,8 @@ public class BigImage extends ImageView implements OnGestureListener,
     m.reset();
     m.postScale(scale, scale);
     m.postTranslate(dx, dy);
-    guiHander.post(new Runnable() {
-      
+    post(new Runnable() {
+
       @Override
       public void run() {
         invalidate();
