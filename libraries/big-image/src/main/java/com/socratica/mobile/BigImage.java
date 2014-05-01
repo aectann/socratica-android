@@ -45,12 +45,13 @@ public class BigImage extends ImageView implements OnGestureListener,
   protected boolean boundsInitialized;
   protected float initScale;
 
-  private GestureDetector gestureDetector;
+  private final GestureDetector gestureDetector;
   private int imageWidth;
   private int imageHeight;
   private int bitmapResource;
   private double scaleFactor;
   private String file;
+  private double prevDelta = 0;
 
   public BigImage(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -65,7 +66,7 @@ public class BigImage extends ImageView implements OnGestureListener,
   }
 
   protected void updateMatrix() {
-    ajustDeltas();
+    adjustDeltas();
     Matrix m = getImageMatrix();
     m.reset();
     m.postScale(scale, scale);
@@ -192,14 +193,14 @@ public class BigImage extends ImageView implements OnGestureListener,
     return opts;
   }
 
-  private void ajustDeltas() {
+  private void adjustDeltas() {
     if (dx > 0) {
       dx = 0;
     }
     if (dy > 0) {
       dy = 0;
     }
-    float minDx = 0;
+    float minDx;
     if (imageWidth * scale < viewWidth) {
       minDx = (viewWidth - imageWidth * scale) / 2;
     } else {
@@ -210,7 +211,7 @@ public class BigImage extends ImageView implements OnGestureListener,
     } else if (dx < minDx) {
       dx = minDx;
     }
-    float minDy = 0;
+    float minDy;
     if (imageHeight * scale < viewHeight) {
       minDy = (viewHeight - imageHeight * scale) / 2;
     } else {
@@ -304,8 +305,6 @@ public class BigImage extends ImageView implements OnGestureListener,
     }
     return false;
   }
-
-  double prevDelta = 0;
 
   @Override
   public boolean onTouch(View v, MotionEvent event) {
