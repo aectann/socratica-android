@@ -24,6 +24,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ExampleListActivity" />
         </activity>
+        <activity
+            android:name="com.socratica.mobile.example.ImageMapActivity"
+            android:label="@string/title_activity_image_map"
+            android:parentActivityName="com.socratica.mobile.example.ExampleListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ExampleListActivity" />
+        </activity>
     </application>
 
 </manifest>

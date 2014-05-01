@@ -3,11 +3,10 @@ package com.socratica.mobile.example.data;
 import android.app.Activity;
 
 import com.socratica.mobile.example.BigImageActivity;
+import com.socratica.mobile.example.ImageMapActivity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ExamplesContent {
 
@@ -15,15 +14,13 @@ public class ExamplesContent {
 
     static {
         addItem(new ExampleItem(BigImageActivity.class, "Big Image"));
+        addItem(new ExampleItem(ImageMapActivity.class, "Image Map"));
     }
 
     private static void addItem(ExampleItem item) {
         ITEMS.add(item);
     }
 
-    /**
-     * A dummy item representing a piece of content.
-     */
     public static class ExampleItem {
         public Class<? extends Activity>  id;
         public String content;
