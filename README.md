@@ -25,7 +25,7 @@ If you have a maven build, you'll need something like this:
 <dependency>
    <groupId>com.socratica.mobile</groupId>
    <artifactId>typeface</artifactId>
-   <version>1.0.1</version>
+   <version>1.0.2</version>
    <type>aar</type>
 </dependency>
 ```
