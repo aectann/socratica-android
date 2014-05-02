@@ -18,5 +18,10 @@ The libraries are available at [Sonatype OSS snapshots maven repo](https://oss.s
 
 Read [gradle-mvn-push](https://github.com/chrisbanes/gradle-mvn-push) readme to understand library release process.
 
+To release a library run following from the library dir:
+
+```
+../../gradlew clean build uploadArchives
+```
 ##Useful links
 1. [Sonatype OSS Maven Repository Usage Guide](https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide#SonatypeOSSMavenRepositoryUsageGuide-7a.DeploySnapshotsandStageReleaseswithMaven)
