@@ -14,7 +14,7 @@ Right now there are four libraries:
 ###Getting binaries
 The libraries are available via maven central repo. 
 
-####Gragle
+####Gradle
 
 ```
 compile 'com.socratica.mobile:typeface:1.+@aar'
