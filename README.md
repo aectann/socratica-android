@@ -2,8 +2,7 @@
 
 Main project source repo and issue tracker are hosted at [Google Code](https://code.google.com/p/socratica-android/), please, post any issues there.
 
-The project contains set of useful Android libraries used by [Socratica](http://socratica.com) to develop
-Android applications.
+The project contains set of useful Android libraries used by [Socratica](http://socratica.com) to develop Android applications.
 
 Right now there are four libraries:
 
@@ -13,13 +12,15 @@ Right now there are four libraries:
  4. [misc](libraries/misc) - all other code with no specific grouping.
 
 ###Getting binaries
-The libraries are available via maven central repo. If you use gradle, you can add typeface library like this:
+The libraries are available via maven central repo. 
+
+####Gragle
 
 ```
 compile 'com.socratica.mobile:typeface:1.+@aar'
 ```
 
-If you have a maven build:
+####Maven
 
 ```xml
 <dependency>
@@ -29,6 +30,8 @@ If you have a maven build:
    <type>aar</type>
 </dependency>
 ```
+
+####Snapshots
 Snapshots are available at [Sonatype OSS snapshots maven repo](https://oss.sonatype.org/content/repositories/snapshots/com/socratica/mobile/).
 
 ###Example project
