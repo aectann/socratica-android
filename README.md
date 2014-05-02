@@ -38,7 +38,7 @@ Snapshots are available at [Sonatype OSS snapshots maven repo](https://oss.sonat
 To see how to use the libraries check out code at [example](example).
 For a live demo grab an apk from [releases](https://github.com/aectann/socratica-android/releases).
 
-##To contributors
+##To maintainers
 Read [gradle-mvn-push](https://github.com/chrisbanes/gradle-mvn-push) readme to understand library release process.
 
 To release a library run following from the library dir:
