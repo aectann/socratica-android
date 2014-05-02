@@ -1,5 +1,7 @@
 #About this project
 
+Main project source repo and issue tracker are hosted at [Google Code](https://code.google.com/p/socratica-android/), please, post any issues there.
+
 The project contains set of useful Android libraries used by [Socratica](http://socratica.com) to develop
 android applications.
 
