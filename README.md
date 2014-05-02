@@ -19,7 +19,7 @@ The libraries are available via maven central repo. If you use gradle, you can a
 compile 'com.socratica.mobile:typeface:1.+@aar'
 ```
 
-If you have a maven build, you'll need something like this:
+If you have a maven build:
 
 ```xml
 <dependency>
