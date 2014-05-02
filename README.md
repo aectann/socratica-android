@@ -7,29 +7,32 @@ android applications.
 
 Right now there are four libraries:
 
- 1. big-image - extension of Android ImageView to support pinch-zoom and pane gestures.
- 2. image-map - extension of the big-image which allow defining active regions over an image (like in HTML image maps). Supports HTML image map definition format.
- 3. typeface - a set of Android TextView based views to allow easy xml configuration for using non standard fonts. App-wide configuration is available.
- 4. misc - all other code with no specific grouping.
+ 1. [big-image](libraries/big-image) - extension of Android ImageView to support pinch-zoom and pane gestures.
+ 2. [image-map](libraries/image-map) - extension of the big-image which allow defining active regions over an image (like in HTML image maps). Supports HTML image map definition format.
+ 3. [typeface](libraries/typeface) - a set of Android TextView based views to allow easy xml configuration for using non standard fonts. App-wide configuration is available.
+ 4. [misc](libraries/misc) - all other code with no specific grouping.
 
-## Getting binaries
+##Getting binaries
 
 The libraries are available via maven central repo. If you use gradle, you can add typeface library like this:
 
 ```
-    compile 'com.socratica.mobile:typeface:1.+@aar'
+compile 'com.socratica.mobile:typeface:1.+@aar'
 ```
 
 If you have a maven build, you'll need something like this:
 
 ```xml
- <dependency>
-       <groupId>com.socratica.mobile</groupId>
-       <artifactId>typeface</artifactId>
-       <version>1.0.1</version>
-       <type>aar</type>
- </dependency>
+<dependency>
+   <groupId>com.socratica.mobile</groupId>
+   <artifactId>typeface</artifactId>
+   <version>1.0.1</version>
+   <type>aar</type>
+</dependency>
 ```
+
+##Example project
+To see how to use the libraries check out code at [example](example).
 
 Snapshots are available at [Sonatype OSS snapshots maven repo](https://oss.sonatype.org/content/repositories/snapshots/com/socratica/mobile/).
 
