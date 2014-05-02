@@ -12,7 +12,24 @@ Right now there are four libraries:
 
 ## Getting binaries
 
-The libraries are available at [Sonatype OSS snapshots maven repo](https://oss.sonatype.org/content/repositories/snapshots/com/socratica/mobile/).
+The libraries are available via maven central repo. If you use gradle, you can add typeface library like this:
+
+```
+    compile 'com.socratica.mobile:typeface:1.+@aar'
+```
+
+If you have a maven build, you'll need something like this:
+
+```xml
+ <dependency>
+       <groupId>com.socratica.mobile</groupId>
+       <artifactId>typeface</artifactId>
+       <version>1.0.1</version>
+       <type>aar</type>
+ </dependency>
+```
+
+Snapshots are available at [Sonatype OSS snapshots maven repo](https://oss.sonatype.org/content/repositories/snapshots/com/socratica/mobile/).
 
 #To contributors
 
