@@ -21,8 +21,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
-apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
-
+apply from: 'https://raw.githubusercontent.com/aectann/gradle-mvn-push/master/gradle-mvn-push.gradle'
 android.libraryVariants.all { variant ->
     def name = variant.buildType.name
     if (name.equals(com.android.builder.BuilderConstants.DEBUG)) {
