@@ -52,11 +52,12 @@ Here `app:map` attribute refers to the xml map definition:
 <?xml version="1.0" encoding="utf-8"?>
 <map >
         <!-- #$-:Image map file created by GIMP Image Map plug-in -->
-        <area shape="poly" coords="271,214,385,227,380,313,260,304"  nohref="1" />
+        <area shape="poly" coords="271,214,385,227,380,313,260,304"  href="1" />
 </map>
 ```
 
 And the actual image is set via standard `android:src` attribute.
+Note that area's `href` attribute is required to be an integer.
 
 ####Other xml attributes
  * `app:selectionPadding` - specifies how much space is left between view border and selected area when an area is clicked;
