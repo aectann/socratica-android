@@ -26,7 +26,7 @@ compile 'com.socratica.mobile:typeface:1.+@aar'
 <dependency>
    <groupId>com.socratica.mobile</groupId>
    <artifactId>typeface</artifactId>
-   <version>1.0.2</version>
+   <version>1.0.3</version>
    <type>aar</type>
 </dependency>
 ```
