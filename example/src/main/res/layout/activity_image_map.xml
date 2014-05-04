@@ -12,6 +12,9 @@
         android:src="@drawable/usamap"
         app:map="@xml/usa"
         app:selectionPadding="50dp"
+        app:selectionColor="#f00"
+        app:selectionType="stroke"
+        app:selectionStrokeWidth="2"
         android:id="@+id/map"/>
 
 </RelativeLayout>

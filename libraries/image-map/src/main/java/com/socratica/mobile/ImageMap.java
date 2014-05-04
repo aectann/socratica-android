@@ -69,11 +69,11 @@ import static android.content.Context.WINDOW_SERVICE;
 public class ImageMap extends BigImage {
 
   public static final int GREEN_OVERLAY_COLOR = 0xff00ff00;
-  public static final PaintType PAINT_TYPE_DEFAULT = new PaintType(Style.FILL,
-      GREEN_OVERLAY_COLOR);
   public static final int RED_OVERLAY_COLOR = 0xffff0000;
-  public static final PaintType PAINT_TYPE_DEFAULT_RED = new PaintType(
-      Style.FILL, RED_OVERLAY_COLOR);
+
+  private final int defaultColor;
+  private final int defaultSelectionType;
+  private final float defaultSelectionStrokeWidth;
 
   private Path[] areaPaths;
   private Path path;
@@ -89,16 +89,22 @@ public class ImageMap extends BigImage {
   private int boundPad;
   private SimpleResourceCache simpleResourceCache;
   private RectF bounds;
+  private PaintType defaultPaintType;
 
   public ImageMap(final Context context, AttributeSet attrs) {
     super(context, attrs);
     manager = (WindowManager) context.getSystemService(WINDOW_SERVICE);
     TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.ImageMap);
     mapResource = attributes.getResourceId(R.styleable.ImageMap_map, 0);
-    boundPad = attributes.getDimensionPixelSize(R.styleable.ImageMap_selectionPadding, 50);
     if (mapResource == 0) {
       throw new IllegalStateException("map attribute must be specified");
     }
+    boundPad = attributes.getDimensionPixelSize(R.styleable.ImageMap_selectionPadding, 50);
+    defaultSelectionType = attributes.getInt(R.styleable.ImageMap_selectionType, 0);
+    defaultColor = attributes.getColor(R.styleable.ImageMap_selectionColor, GREEN_OVERLAY_COLOR);
+    defaultPaintType = new PaintType(defaultSelectionType == 0 ? Style.FILL :  Style.STROKE,  defaultColor);
+    defaultSelectionStrokeWidth = attributes.getFloat(R.styleable.ImageMap_selectionStrokeWidth, 4);
+    attributes.recycle();
 
     new Thread(new Runnable() {
       public void run() {
@@ -124,8 +130,8 @@ public class ImageMap extends BigImage {
 
     paint = new Paint();
     paint.setAntiAlias(true);
-    paint.setColor(GREEN_OVERLAY_COLOR);
-    paint.setStrokeWidth(4);
+    paint.setColor(defaultColor);
+    paint.setStrokeWidth(defaultSelectionStrokeWidth);
   }
 
   public int getMapResource() {
@@ -150,7 +156,7 @@ public class ImageMap extends BigImage {
           }
           canvas.drawPath(path, paint);
         }
-        paint.setColor(GREEN_OVERLAY_COLOR);
+        paint.setColor(defaultColor);
       }
     } else {
       initBounds();
@@ -185,12 +191,11 @@ public class ImageMap extends BigImage {
   /**
    * Highlights the area specified by the areaId with the green color.
    * Automatically adjusts scale and centers the area on the screen.
-   * 
-   * @param areaId
-   *          - the id of area to show
+   *
+   * @param areaId - the id of area to show
    */
   public void showArea(int areaId) {
-    showAreas(new int[] { areaId }, new PaintType[] { PAINT_TYPE_DEFAULT });
+    showAreas(new int[]{areaId}, new PaintType[]{getDefaultPaintType()});
   }
 
   /**
@@ -302,4 +307,9 @@ public class ImageMap extends BigImage {
     }
     return superCallResult;
   }
+
+  public PaintType getDefaultPaintType() {
+    return defaultPaintType;
+  }
+
 }

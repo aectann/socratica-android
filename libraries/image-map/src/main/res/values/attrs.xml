@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
      <declare-styleable name="ImageMap">
+         <attr name="selectionType" format="enum">
+             <enum name="fill" value="0"/>
+             <enum name="stroke" value="1"/>
+          </attr>
+         <attr name="selectionColor" format="color"/>
+         <attr name="selectionStrokeWidth" format="float"/>
 	     <attr name="map" format="reference" />
          <attr name="selectionPadding" format="dimension" />
     </declare-styleable>
