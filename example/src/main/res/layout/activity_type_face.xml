@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.socratica.mobile.example.TypeFaceActivity">
+
+    <com.socratica.mobile.TypefaceTextView
+        android:text="This font is App-wide!"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.socratica.mobile.TypefaceTextView
+        android:text="And this one is only applied to the view."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        app:customTypeface="Play-Regular.ttf"/>
+
+    <com.socratica.mobile.TypefaceButton
+        android:text="Works for buttons as well."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        app:customTypeface="OswaldRegular.ttf"/>
+
+    <com.socratica.mobile.TypefaceRadioButton
+        android:text="And other text view based widgets."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        app:customTypeface="Roboto-Thin.ttf"/>
+
+</LinearLayout>

@@ -5,4 +5,7 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="TypefaceView">
+        <item name="customTypeface">Lobster.ttf</item>
+    </style>
 </resources>

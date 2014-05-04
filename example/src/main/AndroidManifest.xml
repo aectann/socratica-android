@@ -32,6 +32,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ExampleListActivity" />
         </activity>
+        <activity
+            android:name="com.socratica.mobile.example.TypeFaceActivity"
+            android:label="@string/title_activity_type_face"
+            android:parentActivityName="com.socratica.mobile.example.ExampleListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ExampleListActivity" />
+        </activity>
     </application>
 
 </manifest>

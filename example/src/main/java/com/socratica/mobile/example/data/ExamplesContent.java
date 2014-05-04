@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.socratica.mobile.example.BigImageActivity;
 import com.socratica.mobile.example.ImageMapActivity;
+import com.socratica.mobile.example.TypeFaceActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class ExamplesContent {
     static {
         addItem(new ExampleItem(BigImageActivity.class, "Big Image"));
         addItem(new ExampleItem(ImageMapActivity.class, "Image Map"));
+        addItem(new ExampleItem(TypeFaceActivity.class, "TypeFace"));
     }
 
     private static void addItem(ExampleItem item) {
