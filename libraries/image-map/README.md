@@ -64,3 +64,26 @@ Note that area's `href` attribute is required to be an integer.
  * `app:selectionType` - `fill` or `stroke`, defines the way a selected area is highlighted;
  * `app:selectionColor` - defines highlight color;
  * `app:selectionStrokeWidth` - float, defines width of the line that is used to highlight selection, only applies if `app:selectionType` is set to `stroke`.
+
+####Handling area clicks
+To receive are click notifications set an `ImageMapListener` to the `ImageMap` view.
+
+```java
+private ImageMap map;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_image_map);
+    map = (ImageMap) findViewById(R.id.map);
+    map.setImageMapListener(new ImageMapListener() {
+      @Override
+      public void onAreaClicked(int areaId) {
+        map.showArea(areaId);
+        Toast.makeText(ImageMapActivity.this, "You've clicked on an active area!", Toast.LENGTH_SHORT).show();
+      }
+    });
+  }
+```
+
+The `areaId` parameter of the `onAreaClicked` method equals to `href` attribute value of xml map area definition.
